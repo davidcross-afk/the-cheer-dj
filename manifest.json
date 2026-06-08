@@ -1,6 +1,6 @@
 {
   "name": "The Cheer DJ",
-  "short_name": "Cheer DJ",
+  "short_name": "The Cheer DJ",
   "description": "Custom cheer mixes and hype songs you can stream anywhere.",
   "start_url": "./index.html",
   "scope": "./",
