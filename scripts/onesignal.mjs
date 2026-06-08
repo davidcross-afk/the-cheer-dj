@@ -47,7 +47,7 @@ export function getConfig() {
     appId: process.env.ONESIGNAL_APP_ID || APP_ID,
     key,
     authHeader: `${scheme} ${key}`,
-    segment: process.env.ONESIGNAL_SEGMENT || "Subscribed Users",
+    segment: process.env.ONESIGNAL_SEGMENT || "Total Subscriptions",
     siteUrl: process.env.CHEERDJ_SITE_URL || SITE_URL,
   };
 }

@@ -74,8 +74,10 @@ stays in coming-soon until a song is added there).
   local `.env` file (copy `.env.example`). Get it from OneSignal dashboard → Settings →
   Keys & IDs → "REST API Key". The key is a secret — `.env` is gitignored and the key
   never goes into `index.html` or the public site. Then `scripts/add-song.mjs` (above)
-  or `scripts/notify.mjs` will alert every subscriber. Targets the `Subscribed Users`
-  segment by default (override with `ONESIGNAL_SEGMENT`).
+  or `scripts/notify.mjs` will alert every subscriber. Targets the `Total Subscriptions`
+  segment by default — that's "everyone" in this app (override with `ONESIGNAL_SEGMENT`,
+  e.g. `Active Subscriptions`). Check Audience → Segments in the dashboard for the exact
+  names; targeting a segment that doesn't exist silently reaches 0 people.
 - You can still send manually from the dashboard: Messages > New Push.
 - iPhone caveat: web push only works after the user adds the site to their home screen
   and opens it from there. Android and desktop work straight from the button.
