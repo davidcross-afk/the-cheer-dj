@@ -1,0 +1,11 @@
+{
+  "name": "the-cheer-dj",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "The Cheer DJ — static PWA that streams cheer hype mixes, with one-command add-song + push alerts.",
+  "scripts": {
+    "add-song": "node scripts/add-song.mjs",
+    "notify": "node scripts/notify.mjs"
+  }
+}

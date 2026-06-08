@@ -21,7 +21,31 @@ Live at https://dc.thecheerdj.com (hosted on Netlify; subdomain CNAME'd to Netli
 - `*.mp3` — the audio mixes.
 - `supabase-optional/` — a parked, NOT active self-serve admin (see bottom).
 
-## Add or replace a song (current workflow)
+## Add a song + alert everyone (one command)
+
+```
+node scripts/add-song.mjs \
+  --name "Tracy in Boss Mode" \
+  --cat "Coaches" \
+  --file ~/Downloads/tracy_in_boss_mode.mp3
+```
+
+This copies the mp3 into the project, adds it to the `TRACKS` array (reading its
+duration with ffprobe if available), commits + pushes (Netlify auto-deploys), waits
+for it to go live, then sends a push alert to every subscriber.
+
+- `--cat` must be one of: `Comp Day`, `Team Hype`, `Gym Mix`, `Coaches`.
+- `--dur 179` to set the length manually (skips ffprobe).
+- `--cover cover.jpg` for square cover art (drop the image in the folder too).
+- `--src file.mp3` to use an mp3 already in the repo root instead of `--file`.
+- `--message "..."` to override the alert text.
+- `--no-notify` to deploy without alerting; `--no-deploy` to only edit `TRACKS`.
+- `--dry-run` to verify the push key and print the payload **without** sending.
+
+Requires `ONESIGNAL_REST_API_KEY` in `.env` (see "Push notifications" below).
+Send an alert on its own (no song change) with `node scripts/notify.mjs --name "…"`.
+
+## Add or replace a song (manual workflow)
 
 1. Put the `.mp3` in the project root.
 2. In `index.html`, find the `TRACKS` array and add an entry:
@@ -44,9 +68,15 @@ stays in coming-soon until a song is added there).
 
 ## Push notifications (OneSignal)
 
-- The OneSignal App ID is set in `index.html` (`ONESIGNAL_APP_ID`).
+- The OneSignal App ID is set in `index.html` (`ONESIGNAL_APP_ID`) — it's public.
 - Visitors tap "Turn on song alerts" to subscribe.
-- To alert everyone when a song drops: OneSignal dashboard > Messages > New Push.
+- **Sending alerts from the command line:** put your OneSignal **REST API Key** in a
+  local `.env` file (copy `.env.example`). Get it from OneSignal dashboard → Settings →
+  Keys & IDs → "REST API Key". The key is a secret — `.env` is gitignored and the key
+  never goes into `index.html` or the public site. Then `scripts/add-song.mjs` (above)
+  or `scripts/notify.mjs` will alert every subscriber. Targets the `Subscribed Users`
+  segment by default (override with `ONESIGNAL_SEGMENT`).
+- You can still send manually from the dashboard: Messages > New Push.
 - iPhone caveat: web push only works after the user adds the site to their home screen
   and opens it from there. Android and desktop work straight from the button.
 
