@@ -229,6 +229,25 @@ footer{margin-top:54px;border-top:1px solid var(--panel-line);
 .foot-small{margin-top:24px;font-size:12px;color:var(--muted-2)}
 .foot-small a{color:var(--muted);text-decoration:none}
 
+/* MEET THE DJ */
+.meet{padding:8px 0 2px}
+.meet-card{display:flex;gap:28px;align-items:center;
+  padding:28px 32px;border-radius:22px;border:1px solid var(--panel-line);background:var(--panel)}
+.meet-photo{width:210px;height:210px;flex:0 0 auto;border-radius:18px;object-fit:cover;object-position:center top;
+  border:1px solid var(--panel-line);box-shadow:0 18px 46px -16px rgba(73,153,152,.55)}
+.meet-text{flex:1;min-width:0}
+.meet-text .kicker{margin-bottom:12px}
+.meet-title{font-family:'Anton',sans-serif;font-weight:400;letter-spacing:.02em;
+  font-size:clamp(26px,4.4vw,40px);line-height:1;margin:0 0 14px;color:#fff}
+.meet-text p{color:var(--muted);font-size:15px;line-height:1.65;margin:0 0 12px}
+.meet-text p:last-child{margin-bottom:0}
+.meet-text .sign{color:var(--gold);font-weight:700}
+@media(max-width:640px){
+  .meet-card{flex-direction:column;text-align:center;padding:26px 22px}
+  .meet-photo{width:170px;height:170px}
+  .meet-text .kicker{justify-content:center}
+}
+
 /* STICKY PLAYER */
 .player{position:fixed;left:0;right:0;bottom:0;z-index:50;
   background:linear-gradient(180deg,rgba(21,8,46,.85),rgba(10,1,24,.97));
@@ -370,6 +389,21 @@ footer{margin-top:54px;border-top:1px solid var(--panel-line);
           <li>Confirm, and it opens full screen like a real app.</li>
         </ol>
         <button class="btn btn-solid" id="cardInstall" style="margin-top:18px">Add to phone to listen on the go</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- MEET THE DJ -->
+  <section class="meet">
+    <div class="wrap">
+      <div class="meet-card rv">
+        <img class="meet-photo" src="dj-photo.jpg" width="210" height="210" loading="lazy" alt="David, The Cheer DJ, with his daughter at a competition">
+        <div class="meet-text">
+          <div class="kicker"><span class="dot"></span>Meet the DJ</div>
+          <h2 class="meet-title">Hi, I'm David — The Cheer DJ</h2>
+          <p>My daughter cheers for Dynamic Cheer, and the first time I watched her hit the mat I was hooked on that comp-day energy. Music has been my passion my whole life, so I started making the hype mixes that get our girls fired up before they take the floor.</p>
+          <p>Every track here is made with love for these athletes — to shake the nerves, lock in the eight-count, and turn a routine into a moment. This is my way of being part of the team. Now press play and <span class="sign">get loud.</span></p>
+        </div>
       </div>
     </div>
   </section>
