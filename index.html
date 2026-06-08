@@ -400,10 +400,10 @@ footer{margin-top:54px;border-top:1px solid var(--panel-line);
         <img class="meet-photo" src="dj-photo.jpg" width="210" height="210" loading="lazy" alt="David, The Cheer DJ, with his daughter at a competition">
         <div class="meet-text">
           <div class="kicker"><span class="dot"></span>Meet the DJ</div>
-          <h2 class="meet-title">Hi, I'm David — The Cheer DJ</h2>
+          <h2 class="meet-title">Hi, I'm David, The Cheer DJ</h2>
           <p>My daughter Emmalyn cheers for Dynamic Cheer, and the first time I watched her hit the mat I was hooked on that comp-day energy. Music has been my passion my whole life, so I started making the hype mixes that get our girls and coaches fired up before they take the floor.</p>
-          <p>Cheer is something truly special — the heart, the hustle, and the way a whole gym lifts each other up. I'm endlessly grateful for the amazing people I've met and the friendships I've made along the way. You all mean the world to me.</p>
-          <p>Every track here is made with love for our girls and coaches — to shake the nerves, lock in the eight-count, and turn a routine into a moment. Now press play and <span class="sign">get loud.</span></p>
+          <p>Cheer is something truly special. The heart, the hustle, and the way a whole gym lifts each other up. I'm endlessly grateful for the amazing people I've met and the friendships I've made along the way. You all mean the world to me.</p>
+          <p>Every track here is made with love for our girls, coaches, parents and supporters... to shake the nerves, lock in the eight-count, and turn a routine into a moment. Now press play and <span class="sign">get loud.</span></p>
         </div>
       </div>
     </div>
@@ -596,7 +596,7 @@ function playAll(){
 
 audio.addEventListener('play',()=>{isPlaying=true;$('playIco').style.display='none';$('pauseIco').style.display='block';});
 audio.addEventListener('pause',()=>{isPlaying=false;$('playIco').style.display='block';$('pauseIco').style.display='none';});
-audio.addEventListener('error',()=>{$('npCat').textContent='Could not load this track — check the file uploaded';});
+audio.addEventListener('error',()=>{$('npCat').textContent='Could not load this track. Check the file uploaded.';});
 audio.addEventListener('ended',()=>{ if(repeat){audio.currentTime=0;audio.play();}else next(); });
 audio.addEventListener('loadedmetadata',()=>{$('durTime').textContent=fmt(audio.duration);});
 audio.addEventListener('timeupdate',()=>{
@@ -652,7 +652,7 @@ function setAlertsLabel(on){
   if(alertsBtn) alertsBtn.classList.toggle('alerts-on', !!on);
 }
 // Reflect the real subscription state on load, when it changes, and when the
-// (installed) app regains focus — so it never falsely shows "off" on return.
+// (installed) app regains focus, so it never falsely shows "off" on return.
 if(alertsConfigured()){
   window.OneSignalDeferred=window.OneSignalDeferred||[];
   window.OneSignalDeferred.push((OneSignal)=>{
@@ -676,7 +676,7 @@ if(alertsBtn){
           await OneSignal.User.PushSubscription.optOut();          // tap again = turn off
         }else{
           await OneSignal.Notifications.requestPermission();
-          // Opt in unconditionally — on iOS the permission flag may not have
+          // Opt in unconditionally; on iOS the permission flag may not have
           // updated synchronously, so gating optIn() on it silently skips it
           // and leaves the device with a token but never "subscribed".
           await OneSignal.User.PushSubscription.optIn();
