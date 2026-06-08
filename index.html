@@ -307,7 +307,7 @@ footer{margin-top:54px;border-top:1px solid var(--panel-line);
       <button class="btn btn-ghost" id="heroInstall">Add to phone to listen on the go</button>
       <button class="btn btn-ghost" id="alertsBtn">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
-        Turn on song alerts
+        <span id="alertsLbl">Turn on song alerts</span>
       </button>
     </div>
     <div class="tags rv">
@@ -605,19 +605,46 @@ function doInstall(){
 
 /* new-song push alerts via OneSignal */
 const alertsBtn=$('alertsBtn');
+const alertsLbl=$('alertsLbl');
+function alertsConfigured(){ return typeof ONESIGNAL_APP_ID!=='undefined' && !ONESIGNAL_APP_ID.startsWith('PASTE'); }
+function alertsOn(OneSignal){
+  try{ return OneSignal.Notifications.permission===true && OneSignal.User.PushSubscription.optedIn===true; }
+  catch(e){ return false; }
+}
+function setAlertsLabel(on){
+  if(alertsLbl) alertsLbl.textContent = on ? "Alerts are on" : "Turn on song alerts";
+  if(alertsBtn) alertsBtn.classList.toggle('alerts-on', !!on);
+}
+// Reflect the real subscription state on load, when it changes, and when the
+// (installed) app regains focus — so it never falsely shows "off" on return.
+if(alertsConfigured()){
+  window.OneSignalDeferred=window.OneSignalDeferred||[];
+  window.OneSignalDeferred.push((OneSignal)=>{
+    const sync=()=>setAlertsLabel(alertsOn(OneSignal));
+    sync();
+    try{ OneSignal.Notifications.addEventListener('permissionChange',sync); }catch(e){}
+    try{ OneSignal.User.PushSubscription.addEventListener('change',sync); }catch(e){}
+    document.addEventListener('visibilitychange',()=>{ if(!document.hidden) sync(); });
+  });
+}
 if(alertsBtn){
   alertsBtn.onclick=()=>{
-    if(typeof ONESIGNAL_APP_ID==='undefined' || ONESIGNAL_APP_ID.startsWith('PASTE')){
+    if(!alertsConfigured()){
       alert('Song alerts are not switched on yet. They go live once the alerts service is connected.');
       return;
     }
     window.OneSignalDeferred=window.OneSignalDeferred||[];
     window.OneSignalDeferred.push(async (OneSignal)=>{
       try{
-        await OneSignal.Notifications.requestPermission();
-        if(OneSignal.Notifications.permission){
-          alertsBtn.textContent="Alerts are on";
+        if(alertsOn(OneSignal)){
+          await OneSignal.User.PushSubscription.optOut();          // tap again = turn off
+        }else{
+          await OneSignal.Notifications.requestPermission();
+          if(OneSignal.Notifications.permission){
+            await OneSignal.User.PushSubscription.optIn();
+          }
         }
+        setAlertsLabel(alertsOn(OneSignal));
       }catch(e){ console.error(e); }
     });
   };
