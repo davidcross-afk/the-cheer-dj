@@ -640,9 +640,10 @@ if(alertsBtn){
           await OneSignal.User.PushSubscription.optOut();          // tap again = turn off
         }else{
           await OneSignal.Notifications.requestPermission();
-          if(OneSignal.Notifications.permission){
-            await OneSignal.User.PushSubscription.optIn();
-          }
+          // Opt in unconditionally — on iOS the permission flag may not have
+          // updated synchronously, so gating optIn() on it silently skips it
+          // and leaves the device with a token but never "subscribed".
+          await OneSignal.User.PushSubscription.optIn();
         }
         setAlertsLabel(alertsOn(OneSignal));
       }catch(e){ console.error(e); }
