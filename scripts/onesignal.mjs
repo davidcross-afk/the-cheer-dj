@@ -69,7 +69,7 @@ export async function verifyCredentials() {
 }
 
 // Build the push payload for a newly added song.
-export function buildSongPayload({ name, cat, message }) {
+export function buildSongPayload({ name, cat, message, heading }) {
   const cfg = getConfig();
   const body = message || `"${name}" is live${cat ? ` in ${cat}` : ""}. Press play and get loud.`;
   return {
@@ -77,7 +77,7 @@ export function buildSongPayload({ name, cat, message }) {
       app_id: cfg.appId,
       target_channel: "push",
       included_segments: [cfg.segment],
-      headings: { en: "New mix dropped 🎶" },
+      headings: { en: heading || "New mix dropped 🎶" },
       contents: { en: body },
       url: cfg.siteUrl,
       chrome_web_icon: `${cfg.siteUrl}/icon-192.png`,
@@ -88,9 +88,9 @@ export function buildSongPayload({ name, cat, message }) {
 }
 
 // Send (or dry-run) a "new song" push to all subscribers.
-export async function sendNewSongPush({ name, cat, message, dryRun = false }) {
+export async function sendNewSongPush({ name, cat, message, heading, dryRun = false }) {
   if (!name) throw new Error("sendNewSongPush requires a song name.");
-  const { payload, cfg } = buildSongPayload({ name, cat, message });
+  const { payload, cfg } = buildSongPayload({ name, cat, message, heading });
 
   if (dryRun) {
     const v = await verifyCredentials();
@@ -103,7 +103,16 @@ export async function sendNewSongPush({ name, cat, message, dryRun = false }) {
     body: JSON.stringify(payload),
   });
   const body = await res.json().catch(() => ({}));
-  if (!res.ok || body.errors) {
+
+  // "No recipients" is a normal condition (nobody subscribed yet), not a failure:
+  // OneSignal returns HTTP 200 with this error and an empty id.
+  const errs = Array.isArray(body.errors) ? body.errors : [];
+  const noRecipients = errs.some((e) => /not subscribed|no subscribers|0 recipients/i.test(e));
+  if (noRecipients) {
+    return { id: null, recipients: 0, noRecipients: true, payload };
+  }
+
+  if (!res.ok || errs.length) {
     throw new Error(
       `OneSignal send failed (HTTP ${res.status}). ${JSON.stringify(body)}`
     );

@@ -136,6 +136,8 @@ if (a.notify) {
     if (r.dryRun) {
       console.log("✅ Dry run — key verified, push NOT sent. Payload:");
       console.log(JSON.stringify(r.payload, null, 2));
+    } else if (r.noRecipients) {
+      console.log("📣 alert accepted, but 0 devices are subscribed yet — nothing delivered.");
     } else {
       console.log(`📣 push sent. id=${r.id} recipients=${r.recipients}`);
     }

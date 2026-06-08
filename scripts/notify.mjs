@@ -16,6 +16,7 @@ function parseArgs(argv) {
     else if (a === "--name") args.name = argv[++i];
     else if (a === "--cat") args.cat = argv[++i];
     else if (a === "--message") args.message = argv[++i];
+    else if (a === "--heading") args.heading = argv[++i];
     else if (!args.name) args.name = a; // allow positional name
   }
   return args;
@@ -34,6 +35,9 @@ try {
     console.log(`   App: ${r.verified.appId}`);
     console.log("   Payload that WOULD be sent:");
     console.log(JSON.stringify(r.payload, null, 2));
+  } else if (r.noRecipients) {
+    console.log("✅ Request accepted, but 0 devices are subscribed yet — nothing delivered.");
+    console.log("   Tap 'Turn on song alerts' in the app to subscribe (iPhone: add to home screen first).");
   } else {
     console.log(`✅ Push sent. id=${r.id} recipients=${r.recipients}`);
   }
